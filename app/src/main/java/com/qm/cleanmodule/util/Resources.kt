@@ -9,7 +9,7 @@ data class Resources<out T>(val status: Status, val data: T? = null, val message
         fun <T> success(data: T?, msg: String? = null): Resources<T> {
             return Resources(Status.SUCCESS, data, msg)
         }
-        fun <T> message(msg: String, data: T? = null): Resources<T> {
+        fun <T> message(msg: String?, data: T? = null): Resources<T> {
             return Resources(Status.MESSAGE, data, msg)
         }
         fun <T> loading(data: T?): Resources<T> {

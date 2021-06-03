@@ -15,7 +15,7 @@ import com.qm.cleanmodule.util.bindView
 
 abstract class BaseActivity<B : ViewDataBinding, VM : ViewModel> : AppCompatActivity() {
 
-    val showProgress = ObservableBoolean()
+    val baseShowProgress = ObservableBoolean()
     protected abstract val mViewModel: VM
     lateinit var binding: B
 

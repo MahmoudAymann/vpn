@@ -5,7 +5,6 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.bumptech.glide.load.engine.Resource
 
 /**
  * Created by MahmoudAyman on 6/9/2020.
@@ -14,8 +13,6 @@ open class BaseViewModel : ViewModel(), Observable {
     private val mCallBacks: PropertyChangeRegistry = PropertyChangeRegistry()
     val mutableLiveData = MutableLiveData<Any?>()
     var isLoading = ObservableBoolean()
-    //for network
-    val resultLiveData = MutableLiveData<Resource<Any?>>()
     override fun onCleared() {
         super.onCleared()
     }
@@ -43,13 +40,5 @@ open class BaseViewModel : ViewModel(), Observable {
     fun postValue(o: Any?) {
         mutableLiveData.postValue(o)
     }
-
-    fun setResult(o: Resource<Any?>?) {
-        resultLiveData.value = o
-    }
-    fun postResult(o: Resource<Any?>?) {
-        resultLiveData.postValue(o)
-    }
-
 
 }

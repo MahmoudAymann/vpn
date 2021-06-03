@@ -3,31 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/songFragment">
 
 
     <fragment
-        android:id="@+id/splashFragment"
-        android:name="com.qm.cleanmodule.ui.fragment.splash.SplashFragment"
-        android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash">
+        android:id="@+id/songFragment"
+        android:name="com.qm.cleanmodule.ui.fragment.songs.SongFragment"
+        android:label="SongFragment"
+        tools:layout="@layout/fragment_song">
         <action
-            android:id="@+id/action_splashFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            android:id="@+id/action_songFragment_to_songDetailsFragment"
+            app:destination="@id/songDetailsFragment" />
     </fragment>
     <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.qm.cleanmodule.ui.fragment.login.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/fragment_login" />
-    <dialog
-        android:id="@+id/bottomSheetFragment"
-        android:name="com.qm.cleanmodule.ui.fragment.bottomsheet.BottomSheetFragment"
-        android:label="fragment_bottom_sheet"
-        tools:layout="@layout/fragment_bottom_sheet">
+        android:id="@+id/songDetailsFragment"
+        android:name="com.qm.cleanmodule.ui.fragment.songdetails.SongDetailsFragment"
+        android:label="SongDetailsFragment"
+        tools:layout="@layout/fragment_song_details">
         <argument
-            android:name="data"
-            app:argType="com.qm.cleanmodule.data.model.SearchItemInterface[]"
+            android:name="songitem"
+            android:defaultValue="@null"
+            app:argType="com.qm.cleanmodule.ui.fragment.songs.SongsItem"
             app:nullable="true" />
-    </dialog>
+    </fragment>
 </navigation>

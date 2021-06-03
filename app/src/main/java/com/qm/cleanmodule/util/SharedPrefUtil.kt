@@ -13,6 +13,7 @@ import kotlin.reflect.KProperty
 /**
  * Created by MahmoudAyman on 7/16/2020.
  **/
+
 object SharedPrefUtil {
 
     fun Context.getPrefLanguage(): String {

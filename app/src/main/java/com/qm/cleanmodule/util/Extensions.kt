@@ -5,14 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.annotation.AnimRes
@@ -30,20 +33,16 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import cn.pedant.SweetAlert.SweetAlertDialog
-import com.mabaat.androidapp.base.network.response.NetworkResponse
+import coil.load
+import com.google.gson.*
+import com.google.gson.reflect.TypeToken
 import com.qm.cleanmodule.BR
+import com.qm.cleanmodule.R
 import com.qm.cleanmodule.app.BaseApplication
 import com.qm.cleanmodule.base.view.BaseFragment
-import com.qm.cleanmodule.base.viewmodel.AndroidBaseViewModel
-import com.qm.cleanmodule.data.remote.ErrorResponse
 import com.qm.cleanmodule.ui.activity.MainActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import java.io.File
 import java.lang.reflect.ParameterizedType
-import com.qm.cleanmodule.R
 
 
 fun Activity.showActivity(
@@ -59,100 +58,14 @@ fun AppCompatActivity.findFragmentById(id: Int): Fragment? {
     }
 }
 
-fun <T : Any> AndroidBaseViewModel.requestNewCallRefactor(
-    networkCall: suspend () -> NetworkResponse<T, ErrorResponse>,
-    disableProgress: Boolean = false,
-    successCallBack: (T) -> Unit
-) {
-    viewModelScope.launch {
-        postResult(Resources.loading(null))
-        isLoading.set(!disableProgress)
-        val res = networkCall() // execute
-        Timber.e("$res")
-        when (res) {
-            is NetworkResponse.Success -> {
-                viewModelScope.launch(Dispatchers.Main) {
-                    successCallBack(res.body)
-                }
-            }
-            is NetworkResponse.ServerError -> postResult(Resources.message(getShownError(res.body)))
-            is NetworkResponse.NetworkError -> postResult(Resources.message(app.getString(R.string.network_error)))
-            is NetworkResponse.UnknownError -> postResult(Resources.message(app.getString(R.string.server_error)))
-        }
-
-    }
-}
-
-private fun getShownError(response: ErrorResponse?): String {
-    return response?.validation?.let {
-        "${it[0]}"
-    } ?: "null"
-}
 
 fun Activity.restartApp() {
     showActivity(MainActivity::class.java)
     finishAffinity()
 }
 
-fun FragmentActivity.showLogoutDialog(onClick: () -> Unit) {
-    val dialog = SweetAlertDialog(this)
-        .setContentText(getString(R.string.log_out_check_message))
-        .setConfirmButton(getString(R.string.yes)) {
-            it.closeDialog()
-            onClick()
-        }
-        .setCancelButton(getString(R.string.no)) { sDialog ->
-            sDialog.closeDialog()
-        }
-        .setConfirmButtonTextColor(getColorFromRes(R.color.white))
-        .setCancelButtonBackgroundColor(getColorFromRes(R.color.white))
-    dialog.show()
-}
-
-fun Activity.showExitDialog() {
-    val dialog = SweetAlertDialog(this)
-        .setContentText(getString(R.string.exit_app))
-        .setConfirmText(getString(R.string.exit))
-        .setConfirmClickListener { sDialog ->
-            sDialog.closeDialog()
-            finishAffinity()
-        }
-        .setCancelText(getString(R.string.cancel))
-        .setCancelClickListener { sDialog ->
-            sDialog.closeDialog()
-        }
-        .setConfirmButtonBackgroundColor(getColorFromRes(R.color.colorPrimary))
-        .setConfirmButtonTextColor(getColorFromRes(R.color.white))
-        .setCancelButtonBackgroundColor(getColorFromRes(R.color.white))
-    dialog.show()
-}
-
-fun Context.showDialog(msg: String?, type: Int? = null, okClick: () -> Unit = {}) {
-    SweetAlertDialog(
-        this,
-        type ?: SweetAlertDialog.NORMAL_TYPE
-    )
-        .setContentText(msg)
-        .setConfirmButton(getString(R.string.yes)) { sDialog ->
-            sDialog.closeDialog()
-            okClick()
-        }.setCancelButton(getString(R.string.no)) {
-            it.closeDialog()
-        }
-        .setConfirmButtonBackgroundColor(getColorFromRes(R.color.black))
-        .setConfirmButtonTextColor(getColorFromRes(R.color.white))
-        .show()
-}
-
 fun Context.getColorFromRes(@ColorRes colorRes: Int): Int {
     return ContextCompat.getColor(this, colorRes)
-}
-
-fun SweetAlertDialog.closeDialog() {
-    if (!AppUtil.isOldDevice())
-        dismissWithAnimation()
-    else
-        dismiss()
 }
 
 
@@ -188,35 +101,18 @@ fun String.isValidUrl(): Boolean {
     return try {
         URLUtil.isValidUrl(this) && Patterns.WEB_URL.matcher(this).matches()
     } catch (e: Exception) {
-        Timber.e(e)
         false
     }
 }
 
 
-fun ImageView.loadImageFromURL(url: String, progressBar: ProgressBar? = null) {
-//    val picasso =
-//        Picasso.Builder(this.context).downloader(OkHttp3Downloader(UnsafeOkHttpClient().client))
-//            .build()
-//    picasso.isLoggingEnabled = true
-//    picasso.load(url)
-//        .error(R.drawable.ic_broken_image)
-//        .placeholder(R.color.offwhite)
-//        .fit()
-//        .into(this, object : Callback {
-//            override fun onSuccess() {
-//                progressBar?.apply {
-//                    visibility = View.GONE
-//                }
-//            }
-//
-//            override fun onError(e: Exception?) {
-//                Timber.e("$e")
-//                progressBar?.apply {
-//                    visibility = View.GONE
-//                }
-//            }
-//        })
+fun ImageView.loadImageFromURL(url: String?, progressBar: ProgressBar? = null) {
+    val mUrl = "https:$url"
+    if (url.isNullOrBlank()) {
+        setImageResource(R.drawable.ic_broken_image)
+    } else {
+        load(mUrl)
+    }
 }
 
 
@@ -284,32 +180,6 @@ fun <T : Any> Any.getTClass(): Class<T> {
     return (javaClass.genericSuperclass as ParameterizedType).actualTypeArguments[0] as Class<T>
 }
 
-inline fun <reified VM : ViewModel> ViewModelStoreOwner.bindViewModel(
-    binding: ViewDataBinding,
-    factory: ViewModelProvider.Factory? = null, body: VM.() -> Unit
-): VM {
-    return if (this is Fragment) {
-        val vm by lazy {
-            ViewModelProvider(
-                this,
-                factory ?: defaultViewModelProviderFactory
-            )[VM::class.java]
-        }
-        binding.setVariable(BR.viewModel, vm)
-        vm.apply(body)
-    } else {
-        val act = this as AppCompatActivity
-        val vm by lazy {
-            ViewModelProvider(
-                act,
-                factory ?: defaultViewModelProviderFactory
-            )[VM::class.java]
-        }
-        binding.setVariable(BR.viewModel, vm)
-        vm.apply(body)
-    }
-}
-
 
 @Suppress("UNCHECKED_CAST")
 fun <B : ViewDataBinding> LifecycleOwner.bindView(container: ViewGroup? = null): B {
@@ -344,19 +214,6 @@ fun <T : Any?, L : LiveData<T>> LifecycleOwner.observe(liveData: L, body: (T?) -
     })
 }
 
-inline fun <reified T : AppCompatActivity> Fragment.castToActivity(
-    callback: (T?) -> Unit
-): T {
-    return if (requireActivity() is T) {
-        callback(requireActivity() as T)
-        requireActivity() as T
-    } else {
-        Timber.e("class cast exception, check your fragment is in the correct activity")
-        callback(null)
-        throw ClassCastException()
-    }
-
-}
 
 
 fun View.visible(){
@@ -409,7 +266,99 @@ fun canNavigate(controller: NavController, view: View?): Boolean {
         view?.setTag(R.id.tag_navigation_destination_id, destinationIdOfThisFragment)
         true
     } else {
-        Timber.e("May not navigate: current destination is not the current fragment.")
+        Log.e("nav", "May not navigate: current destination is not the current fragment.")
         false
     }
+
+
 }
+
+fun EditText.onImeClick(callback: () -> Unit) {
+    setOnEditorActionListener { _, actionId, _ ->
+        callback.invoke()
+        true
+    }
+}
+
+fun Map<String, Any>.mMapToJsonElement(): JsonElement = this.hashToJe()
+private fun Map<String, Any>.hashToJe(): JsonElement {
+    val type2 = object : TypeToken<HashMap<String, Any>>() {}.type
+    val mToJsonParams: String = Gson().toJson(this, type2)
+    val ret = JsonParser().parse(mToJsonParams)
+    return ret
+}
+
+inline fun <reified T : Any> T.mAnyToJsonElement(): JsonElement {
+    val type2 = object : TypeToken<T>() {}.type
+    val mToJsonParams: String = Gson().toJson(this, type2)
+    return JsonParser().parse(mToJsonParams)
+}
+
+fun String.mStringToJsonElement(): JsonElement {
+    return JsonParser().parse(this)
+}
+
+@Throws(JsonSyntaxException::class)
+inline fun <reified T : Any> JsonElement.mMapToArrayList(): ArrayList<T> =
+    try {
+        mapJson(this)
+    } catch (e: JsonSyntaxException) {
+        e.printStackTrace()
+        ArrayList()
+    }
+
+@Throws(JsonSyntaxException::class)
+inline fun <reified T : Any> JsonArray.mMapToArrayListFix(): ArrayList<T> =
+    try {
+        val ret = ArrayList<T>()
+        this.forEach { js ->
+            val obj: T? = try {
+                js.mMapToObject<T>()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
+            obj?.let { ob ->
+                ret.add(ob)
+            }
+        }
+        ret
+    } catch (e: JsonSyntaxException) {
+        e.printStackTrace()
+        ArrayList()
+    }
+
+inline fun <reified T : Any> JsonElement.mMapToObject(): T? =
+    try {
+        mapJson(this)
+    } catch (e: JsonSyntaxException) {
+        null
+    }
+
+inline fun <reified T : Any> JsonObject.mMapToObject(): T? =
+    try {
+        mapJson(this)
+    } catch (e: JsonSyntaxException) {
+        null
+    }
+
+@Throws(JsonSyntaxException::class)
+inline fun <reified T : Any> mapJson(je: JsonElement): T {
+    val type = object : TypeToken<T>() {}.type
+    return Gson().fromJson(je, type)
+}
+
+@Throws(JsonSyntaxException::class)
+inline fun <reified T : Any> mapJson(je: JsonObject): T {
+    val type = object : TypeToken<T>() {}.type//type
+    return Gson().fromJson(je, type)
+}
+
+fun ArrayList<*>?.validateArrayList() = this != null
+fun String?.isValid() = !(this.isNullOrEmpty())
+fun Any?.validateType() = this != null
+fun isNotNull(A: Any?): Boolean {
+    return A != null
+}
+
+val emptyJe: JsonElement = HashMap<String, String>().mMapToJsonElement()

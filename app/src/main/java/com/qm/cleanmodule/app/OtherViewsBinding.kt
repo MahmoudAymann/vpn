@@ -2,21 +2,18 @@ package com.qm.cleanmodule.app
 
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
-import android.util.Base64
 import android.view.View
-import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.DrawableRes
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView
 import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
@@ -24,20 +21,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.qm.cleanmodule.constants.ConstString
-import com.qm.cleanmodule.data.model.ListDataItem
-import com.qm.cleanmodule.util.*
-import com.qm.cleanmodule.util.AppUtil.getFont
-import com.qm.cleanmodule.util.SharedPrefUtil.getPrefLanguage
 import com.qm.cleanmodule.R
-import com.tenclouds.fluidbottomnavigation.FluidBottomNavigation
-import com.tenclouds.fluidbottomnavigation.FluidBottomNavigationItem
-import timber.log.Timber
+import com.qm.cleanmodule.util.gone
+import com.qm.cleanmodule.util.invisible
+import com.qm.cleanmodule.util.loadImageFromURL
+import com.qm.cleanmodule.util.visible
 
 /**
  * Created by MahmoudAyman on 6/18/2020.
@@ -48,21 +39,6 @@ class OtherViewsBinding {
     @BindingAdapter("setCalendarFabColor")
     fun colorFab(fab: FloatingActionButton, color: Int) {
         fab.backgroundTintList = ColorStateList.valueOf(color)
-    }
-
-    @BindingAdapter("setEditTextList")
-    fun setEditTextList(til: TextInputLayout, items: ArrayList<ListDataItem>?) {
-        items?.let {
-            val adapter = ArrayAdapter(til.context, android.R.layout.simple_list_item_1, items)
-            (til.editText as AppCompatAutoCompleteTextView).setAdapter(adapter)
-        } ?: Timber.e("list in null")
-    }
-
-    @BindingAdapter("setBottomBarMenu")
-    fun bindMenuInBottomBar(fbn: FluidBottomNavigation, list: List<FluidBottomNavigationItem>?) {
-        list?.apply {
-            fbn.items = this
-        } ?: Timber.e("list is null")
     }
 
     @BindingAdapter("setUnderLinedText")
@@ -80,6 +56,10 @@ class OtherViewsBinding {
         }
     }
 
+    @BindingAdapter("android:onTextChanged")
+    fun bindOnTextChange(tie: EditText, textChanged: TextWatcher) {
+        tie.addTextChangedListener(textChanged)
+    }
 
     @BindingAdapter(value = ["loadImage", "imageLoader"], requireAll = false)
     fun bindLoadImage(imageView: ImageView, obj: Any?, progressBar: ProgressBar?) {
@@ -89,23 +69,10 @@ class OtherViewsBinding {
                 is Drawable -> imageView.setImageDrawable(it)
                 is Bitmap -> imageView.setImageBitmap(it)
                 is Uri -> imageView.setImageURI(it)
-                is String -> when {
-                    it.isValidUrl() -> imageView.loadImageFromURL(it, progressBar)
-                    it.length >= 200 -> {
-                        Timber.e("image is encoded")
-                        val decodedString: ByteArray = Base64.decode(obj.toString(), Base64.DEFAULT)
-                        Glide.with(imageView.context).asBitmap()
-                            .load(decodedString)
-                            .error(R.drawable.ic_broken_image)
-                            .into(imageView)
-                    }
-                    else -> {
-                        Timber.e("image string isn't valid")
-                        imageView.loadImageFromURL("")
-                    }
+                is String -> {
+                    imageView.loadImageFromURL(it, progressBar)
                 }
                 else -> {
-                    Timber.e("image url isn't valid")
                     imageView.loadImageFromURL("")
                 }
             }
@@ -138,11 +105,6 @@ class OtherViewsBinding {
 
     }
 
-    @BindingAdapter("android:onTextChanged")
-    fun bindViewInvisible(tie: TextInputEditText, textChanged: TextWatcher) {
-        tie.addTextChangedListener(textChanged)
-    }
-
     @BindingAdapter("app:adapter", "app:setDivider")
     fun bindAdapter(recyclerView: RecyclerView, adapter: ListAdapter<*, *>?, divider: Boolean?) {
         adapter?.let {
@@ -154,7 +116,7 @@ class OtherViewsBinding {
                     recyclerView.addItemDecoration(decoration)
                 }
             }
-        } ?: Timber.e("adapter is null")
+        }
     }
 
     @BindingAdapter("renderHtml")

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.qm.cleanmodule.BR
-import timber.log.Timber
 
 abstract class BaseAdapter<T : BaseParcelable>(
     private val itemClick: (T) -> Unit = {}
@@ -43,7 +42,6 @@ abstract class BaseAdapter<T : BaseParcelable>(
     }
 
     fun removeItem(item: T?, isListEmpty: (Boolean) -> Unit = {}) {
-        Timber.e("deleting > $item in pos: $position")
         item?.let {
             mCurrentList.remove(it)
             submitList(mCurrentList.toMutableList())
@@ -67,14 +65,14 @@ abstract class BaseAdapter<T : BaseParcelable>(
             mCurrentList.add(item)
             submitList(mCurrentList.toMutableList())
             isAdded(true)
-        } ?: Timber.e("item is null")
+        }
     }
 
     fun editItem(item: T?) {
         item?.let {
             mCurrentList[position] = item
             submitList(mCurrentList.toMutableList())
-        } ?: Timber.e("item is null")
+        }
     }
 
     fun clearCurrentList() {
@@ -100,5 +98,5 @@ class BaseItemCallback<T : BaseParcelable> : DiffUtil.ItemCallback<T>() {
 }
 
 interface BaseParcelable {
-    fun unique(): Any
+    fun unique() : Any
 }

@@ -46,9 +46,8 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
-    implementation project(path: ':sweetdialoglibrary')
+
     //Main Libs, key: main
     implementation(main.kotlin)
     implementation (main.kotlinCore)
@@ -67,23 +66,7 @@ dependencies {
     implementation(main.room)
     kapt (main.roomCompiler)
     implementation (main.roomKtx)
-    implementation (main.retrofit)
-    implementation (main.retrofitCoroutinesAdapter)
-
-    //External Libs, key: external
-    implementation (external.bottomNav)
-    implementation (external.timber)
-    implementation (external.sdpAndroid)
-    implementation (external.sspAndroid)
-    implementation (external.converterGson)
-    implementation (external.gson)
-    implementation (external.loggingInterceptors)
-    implementation (external.dexter)
-    implementation (external.pixImage)
-    implementation (external.glide)
-    kapt (external.glideCompiler)
-    implementation (external.swipeRefresh)
-    implementation (external.circularImage)
-
-
+    implementation("com.android.volley:volley:1.2.0")
+    implementation(external.gson)
+    implementation("io.coil-kt:coil:1.2.1")
 }

@@ -10,8 +10,6 @@ import androidx.lifecycle.ViewModel
 import com.qm.cleanmodule.BR
 import com.qm.cleanmodule.ui.activity.MainActivity
 import com.qm.cleanmodule.util.bindView
-import com.qm.cleanmodule.util.castToActivity
-import com.qm.cleanmodule.util.replaceFragment
 import com.qm.cleanmodule.util.showKeyboard
 
 /**
@@ -52,28 +50,14 @@ abstract class BaseFragment<B : ViewDataBinding, VM : ViewModel> :
     }
 
     fun showProgress(show: Boolean = true) {
-        castToActivity<BaseActivity<*, *>> {
-            it?.showProgress?.set(show)
-        }
+        (requireActivity() as BaseActivity<*, *>)
+            .baseShowProgress.set(show)
     }
 
     private fun changeMainTitle(title: String?) {
-        castToActivity<MainActivity> {
-            it?.changeTitle(title)
-        }
+
     }
 
-    inline fun <reified T : BaseFragment<*, *>> replaceFragment(
-        bundle: Bundle? = null
-    ) {
-        activity?.replaceFragment<T>(bundle)
-    }
-
-    fun showBottomBar(show: Boolean = true) {
-        castToActivity<MainActivity> {
-            it?.showBottomBar(show)
-        }
-    }
 
 
     override fun onPause() {

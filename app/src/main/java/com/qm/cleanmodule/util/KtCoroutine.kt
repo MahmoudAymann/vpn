@@ -1,7 +1,6 @@
 package com.qm.cleanmodule.util
 
 import kotlinx.coroutines.*
-import timber.log.Timber
 
 /**
  * Created by MahmoudAyman on 7/15/2020.

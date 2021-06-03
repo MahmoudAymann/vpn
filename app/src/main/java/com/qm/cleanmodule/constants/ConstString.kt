@@ -6,4 +6,5 @@ object ConstString {
     const val LANG_AR: String = "ar"
     const val PREF_LANG: String =  "PREF_LANG"
     const val Const_PREFS_NAME = "app_prefs"
+    const val BASE_URL = "http://staging-gateway.mondiamedia.com/v2/api/sayt/flat"
 }
