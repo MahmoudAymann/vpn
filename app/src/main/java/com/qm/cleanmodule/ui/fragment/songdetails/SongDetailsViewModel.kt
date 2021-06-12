@@ -1,33 +1,20 @@
 package com.qm.cleanmodule.ui.fragment.songdetails
 
-
 import android.app.Application
-import com.android.volley.NetworkResponse
-import com.android.volley.ParseError
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.HttpHeaderParser
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
+
 import com.qm.cleanmodule.base.viewmodel.AndroidBaseViewModel
-import com.qm.cleanmodule.ui.fragment.songs.SongsItem
-import java.io.UnsupportedEncodingException
-import java.nio.charset.Charset
+import com.qm.cleanmodule.ui.fragment.songs.SongsResponse.SongsResponseItem as  SongsResponse
 
 class SongDetailsViewModel(app: Application) : AndroidBaseViewModel(app) {
 
-    var item = SongsItem()
+  var item:  SongsResponse? = null
 
-    fun gotData(args: SongDetailsFragmentArgs){
-        args.songitem?.let {
-            this.item = it
-            notifyChange()
-        }
+  fun gotData(args: SongDetailsFragmentArgs)
+  {
+    args.songitem?.let {
+      //this.item = it
+      //notifyChange()
     }
-
-
-
-
-
+  }
 }
 

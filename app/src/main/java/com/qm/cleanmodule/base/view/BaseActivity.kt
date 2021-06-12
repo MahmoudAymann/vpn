@@ -6,7 +6,6 @@ import androidx.databinding.ObservableBoolean
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import com.qm.cleanmodule.BR
-import com.qm.cleanmodule.util.LocalUtil
 import com.qm.cleanmodule.util.bindView
 
 /**
@@ -20,9 +19,7 @@ abstract class BaseActivity<B : ViewDataBinding, VM : ViewModel> : AppCompatActi
     lateinit var binding: B
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        LocalUtil.changeLanguage(this)
         super.onCreate(savedInstanceState)
-        LocalUtil.changeLanguage(this)
         binding = bindView()
         binding.setVariable(BR.viewModel, mViewModel)
     }

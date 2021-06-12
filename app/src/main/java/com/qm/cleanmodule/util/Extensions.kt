@@ -33,7 +33,6 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import coil.load
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import com.qm.cleanmodule.BR
@@ -42,6 +41,7 @@ import com.qm.cleanmodule.app.BaseApplication
 import com.qm.cleanmodule.base.view.BaseFragment
 import com.qm.cleanmodule.ui.activity.MainActivity
 import java.io.File
+import java.lang.System.load
 import java.lang.reflect.ParameterizedType
 
 
@@ -111,7 +111,7 @@ fun ImageView.loadImageFromURL(url: String?, progressBar: ProgressBar? = null) {
     if (url.isNullOrBlank()) {
         setImageResource(R.drawable.ic_broken_image)
     } else {
-        load(mUrl)
+        ""
     }
 }
 

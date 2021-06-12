@@ -23,7 +23,7 @@
         <argument
             android:name="songitem"
             android:defaultValue="@null"
-            app:argType="com.qm.cleanmodule.ui.fragment.songs.SongsItem"
-            app:nullable="true" />
+            app:nullable="true"
+            app:argType="com.qm.cleanmodule.ui.fragment.songs.SongsResponse$SongsResponseItem" />
     </fragment>
 </navigation>

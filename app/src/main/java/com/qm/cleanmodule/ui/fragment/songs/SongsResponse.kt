@@ -1,162 +1,119 @@
 package com.qm.cleanmodule.ui.fragment.songs
 
-import android.os.Parcelable
+
 import com.google.gson.annotations.SerializedName
-import com.qm.cleanmodule.base.view.BaseParcelable
 import kotlinx.parcelize.Parcelize
+import android.os.Parcelable
+import com.qm.cleanmodule.base.view.BaseParcelable
+import com.qm.cleanmodule.ui.fragment.songs.SongsResponse.SongsResponseItem
+import java.util.Calendar
 
+class SongsResponse : ArrayList<SongsResponseItem>(){
+    @Parcelize
+    data class SongsResponseItem(
+        @SerializedName("additionalArtists")
+        val additionalArtists: List<String?>?,
+        @SerializedName("adfunded")
+        val adfunded: Boolean?,
+        @SerializedName("bundleOnly")
+        val bundleOnly: Boolean?,
+        @SerializedName("cover")
+        val cover: Cover?,
+        @SerializedName("duration")
+        val duration: Int?,
+        @SerializedName("genres")
+        val genres: List<String?>?,
+        @SerializedName("id")
+        val id: Int?,
+        @SerializedName("idBag")
+        val idBag: IdBag?,
+        @SerializedName("label")
+        val label: String?,
+        @SerializedName("mainArtist")
+        val mainArtist: MainArtist?,
+        @SerializedName("mainRelease")
+        val mainRelease: Boolean?,
+        @SerializedName("natures")
+        val natures: List<String?>?,
+        @SerializedName("numberOfTracks")
+        val numberOfTracks: Int?,
+        @SerializedName("partialStreamable")
+        val partialStreamable: Boolean?,
+        @SerializedName("publishingDate")
+        val publishingDate: String?,
+        @SerializedName("release")
+        val release: Release?,
+        @SerializedName("statistics")
+        val statistics: Statistics?,
+        @SerializedName("streamable")
+        val streamable: Boolean?,
+        @SerializedName("streamableTracks")
+        val streamableTracks: Int?,
+        @SerializedName("title")
+        val title: String?,
+        @SerializedName("trackNumber")
+        val trackNumber: Int?,
+        @SerializedName("type")
+        val type: String?,
+        @SerializedName("variousArtists")
+        val variousArtists: Boolean?,
+        @SerializedName("volumeNumber")
+        val volumeNumber: Int?
+    ) : Parcelable ,BaseParcelable{
+        @Parcelize
+        data class Cover(
+            @SerializedName("default")
+            val default: String?,
+            @SerializedName("large")
+            val large: String?,
+            @SerializedName("medium")
+            val medium: String?,
+            @SerializedName("small")
+            val small: String?,
+            @SerializedName("template")
+            val template: String?,
+            @SerializedName("tiny")
+            val tiny: String?
+        ) : Parcelable
+    
+        @Parcelize
+        data class IdBag(
+            @SerializedName("isrc")
+            val isrc: String?,
+            @SerializedName("roviId")
+            val roviId: String?,
+            @SerializedName("roviTrackId")
+            val roviTrackId: String?
+        ) : Parcelable
+    
+        @Parcelize
+        data class MainArtist(
+            @SerializedName("id")
+            val id: Int?,
+            @SerializedName("name")
+            val name: String?
+        ) : Parcelable
+    
+        @Parcelize
+        data class Release(
+            @SerializedName("id")
+            val id: Int?,
+            @SerializedName("title")
+            val title: String?
+        ) : Parcelable
+    
+        @Parcelize
+        data class Statistics(
+            @SerializedName("estimatedRecentCount")
+            val estimatedRecentCount: Int?,
+            @SerializedName("estimatedTotalCount")
+            val estimatedTotalCount: Int?,
+            @SerializedName("popularity")
+            val popularity: Int?
+        ) : Parcelable
 
-@Parcelize
-data class Statistics(
-
-	@field:SerializedName("estimatedRecentCount")
-	val estimatedRecentCount: String? = null,
-
-	@field:SerializedName("popularity")
-	val popularity: String? = null,
-
-	@field:SerializedName("estimatedTotalCount")
-	val estimatedTotalCount: String? = null
-) : Parcelable
-
-@Parcelize
-data class MainArtist(
-
-	@field:SerializedName("name")
-	val name: String? = null,
-
-	@field:SerializedName("id")
-	val id: String? = null
-) : Parcelable
-
-@Parcelize
-data class IdBag(
-
-	@field:SerializedName("isrc")
-	val isrc: String? = null,
-
-	@field:SerializedName("ean")
-	val ean: String? = null,
-
-	@field:SerializedName("upc")
-	val upc: String? = null,
-
-	@field:SerializedName("roviId")
-	val roviId: String? = null,
-
-	@field:SerializedName("roviTrackId")
-	val roviTrackId: String? = null,
-
-	@field:SerializedName("roviReleaseId")
-	val roviReleaseId: String? = null
-) : Parcelable
-
-@Parcelize
-data class Cover(
-
-	@field:SerializedName("small")
-	val small: String? = null,
-
-	@field:SerializedName("template")
-	val template: String? = null,
-
-	@field:SerializedName("default")
-	val jsonMemberDefault: String? = null,
-
-	@field:SerializedName("large")
-	val large: String? = null,
-
-	@field:SerializedName("tiny")
-	val tiny: String? = null,
-
-	@field:SerializedName("medium")
-	val medium: String? = null
-) : Parcelable
-
-@Parcelize
-data class Release(
-
-	@field:SerializedName("id")
-	val id: String? = null,
-
-	@field:SerializedName("title")
-	val title: String? = null
-) : Parcelable
-
-@Parcelize
-data class SongsItem(
-
-	@field:SerializedName("volumeNumber")
-	val volumeNumber: String? = null,
-
-	@field:SerializedName("mainArtist")
-	val mainArtist: MainArtist? = null,
-
-	@field:SerializedName("trackNumber")
-	val trackNumber: String? = null,
-
-	@field:SerializedName("release")
-	val release: Release? = null,
-
-	@field:SerializedName("type")
-	val type: String? = null,
-
-	@field:SerializedName("title")
-	val title: String? = null,
-
-	@field:SerializedName("publishingDate")
-	val publishingDate: String? = null,
-
-	@field:SerializedName("duration")
-	val duration: String? = null,
-
-	@field:SerializedName("cover")
-	val cover: Cover? = null,
-
-	@field:SerializedName("additionalArtists")
-	val additionalArtists: List<String?>? = null,
-
-	@field:SerializedName("adfunded")
-	val adfunded: Boolean? = null,
-
-	@field:SerializedName("streamable")
-	val streamable: Boolean? = null,
-
-	@field:SerializedName("genres")
-	val genres: List<String?>? = null,
-
-	@field:SerializedName("bundleOnly")
-	val bundleOnly: Boolean? = null,
-
-	@field:SerializedName("id")
-	val id: String? = null,
-
-	@field:SerializedName("idBag")
-	val idBag: IdBag? = null,
-
-	@field:SerializedName("statistics")
-	val statistics: Statistics? = null,
-
-	@field:SerializedName("natures")
-	val natures: List<String?>? = null,
-
-	@field:SerializedName("variousArtists")
-	val variousArtists: Boolean? = null,
-
-	@field:SerializedName("label")
-	val label: String? = null,
-
-	@field:SerializedName("partialStreamable")
-	val partialStreamable: Boolean? = null,
-
-	@field:SerializedName("numberOfTracks")
-	val numberOfTracks: String? = null,
-
-	@field:SerializedName("streamableTracks")
-	val streamableTracks: String? = null,
-
-	@field:SerializedName("mainRelease")
-	val mainRelease: Boolean? = null
-) : Parcelable, BaseParcelable {
-	override fun unique() = id ?: "0"
+        override fun unique(): Any {
+            return Calendar.getInstance().timeInMillis
+        }
+    }
 }

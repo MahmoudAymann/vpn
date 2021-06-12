@@ -17,7 +17,7 @@ class SongFragment : BaseFragment<FragmentSongBinding, SongViewModel>() {
         mViewModel.apply {
             observe(mutableLiveData) {
                 when (it) {
-                    is SongsItem-> navigateSafe(SongFragmentDirections.actionSongFragmentToSongDetailsFragment(it))
+                    is  SongsResponse.SongsResponseItem-> navigateSafe(SongFragmentDirections.actionSongFragmentToSongDetailsFragment(it))
                 }
             }
             observe(resultLiveData) {
